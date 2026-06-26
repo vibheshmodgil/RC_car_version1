@@ -1,0 +1,39 @@
+# config/params.yaml — tune everything here, no code edits needed.
+
+esp32_bridge:
+  ros__parameters:
+    port: /dev/serial0
+    baud: 115200
+    max_linear: 1.0        # m/s that maps to full throttle (255)
+    max_angular: 3.0       # rad/s that maps to full steer (255)
+    angular_sign: -1.0     # +z (CCW/left) -> -steer, because ESP32 +steer turns RIGHT.
+                           #   Flip to +1.0 if the car steers the wrong way.
+    cmd_timeout: 0.4       # s; zero the command if /cmd_vel is older than this
+    send_rate: 20.0        # Hz
+
+imu_node:
+  ros__parameters:
+    i2c_bus: 1
+    address: 104           # 0x68
+    sample_rate: 100.0     # Hz
+    gyro_z_sign: 1.0       # flip to -1.0 if heading increases when the car turns RIGHT
+    comp_alpha: 0.98
+    publish_velocity: true # accel-integrated speed/distance (validation only, drifts)
+    accel_forward_sign: 1.0
+    frame_id: imu_link
+    calib_samples: 400     # gyro-bias samples at startup (car must be STILL)
+
+controller_node:
+  ros__parameters:
+    control_rate: 30.0
+    kp_heading: 0.04       # (rad/s) per degree of heading error
+    ki_heading: 0.0
+    kd_heading: 0.005
+    max_turn_rate: 1.5     # rad/s
+    cruise_speed: 0.4      # m/s for moves
+    heading_tol_deg: 2.0
+    distance_tol_m: 0.05
+    distance_source: time  # time | imu | encoder(later)
+    nominal_speed_mps: 0.4 # used when distance_source == time
+    settle_ticks: 5
+    move_timeout_s: 30.0

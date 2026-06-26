@@ -1,0 +1,20 @@
+# Maneuver.action — a closed-loop motion primitive executed by controller_node.
+#
+# Goal
+string  maneuver        # "turn" | "move" | "drive_heading" | "stop"
+float64 value           # turn: degrees (+ = left / CCW). move/drive_heading: meters (+ = forward)
+float64 speed           # 0..255 motor cap; 0 -> controller default
+float64 hold_heading    # drive_heading only: absolute heading (deg) to hold
+---
+# Result
+bool    success
+float64 final_heading_deg
+float64 measured_distance_m     # IMU-measured (for validation)
+float64 heading_error_deg
+string  message
+---
+# Feedback
+float64 progress                # 0.0 .. 1.0
+float64 current_heading_deg
+float64 heading_error_deg
+float64 measured_distance_m
